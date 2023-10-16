@@ -94,6 +94,7 @@ class Build : NukeBuild
     .Executes(() =>
     {
         var sourceBranch = Repository.Branch;
+        Logger.Info(sourceBranch);
 
         if (sourceBranch != "test_development")
         {
