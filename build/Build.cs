@@ -106,6 +106,7 @@ class Build : NukeBuild
             // Use jq to parse the JSON payload provided by GitHub
             var prJson = File.ReadAllText(Environment.GetEnvironmentVariable("GITHUB_EVENT_PATH"));
             sourceBranch = JObject.Parse(prJson)["pull_request"]["head"]["ref"].ToString();
+            Logger.Info(sourceBranch);
         }
 
 
