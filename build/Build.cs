@@ -94,11 +94,12 @@ class Build : NukeBuild
     .Executes(() =>
     {
         var sourceBranch = Repository.Branch;
-        
+        var newSourceBranch = Environment.GetEnvironmentVariable("GITHUB_REF");
+
 
         if (sourceBranch != "test_development")
         {
-            throw new Exception($"{sourceBranch}: Merging into the staging branch is only allowed from the development branch.");
+            throw new Exception($"{sourceBranch}: {newSourceBranch}: Merging into the staging branch is only allowed from the development branch.");
         }
     });
 }
