@@ -11,6 +11,7 @@ using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Utilities.Collections;
+using Octokit;
 using static Nuke.Common.EnvironmentInfo;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
@@ -22,6 +23,11 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
     GitHubActionsImage.UbuntuLatest,
     OnPullRequestBranches = new[] { "master", "main", "staging", "development" },
     InvokedTargets = new[] { nameof(RunTests) })]
+[GitHubActions(
+    "enforce-development-to-staging",
+    GitHubActionsImage.UbuntuLatest,
+    OnPullRequestBranches = new[] { "test_staging"},
+    InvokedTargets = new[] { nameof(EnforceDevelopmentToStaging)})]
 class Build : NukeBuild
 {
     /// Support plugins are available for:
@@ -81,4 +87,17 @@ class Build : NukeBuild
 
     Target RunTests => _ => _
         .DependsOn(RunIntegrationTest, RunUnitTest);
+
+    [GitRepository] GitRepository Repository;
+
+    Target EnforceDevelopmentToStaging => _ => _
+    .Executes(() =>
+    {
+        var sourceBranch = Repository.Branch;
+
+        if (sourceBranch != "test_development")
+        {
+            throw new Exception("Merging into the staging branch is only allowed from the development branch.");
+        }
+    });
 }
