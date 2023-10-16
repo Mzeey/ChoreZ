@@ -28,8 +28,14 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
 [GitHubActions(
     "enforce-development-to-staging",
     GitHubActionsImage.UbuntuLatest,
-    OnPullRequestBranches = new[] { "test_staging"},
+    OnPullRequestBranches = new[] { "staging"},
     InvokedTargets = new[] { nameof(EnforceDevelopmentToStaging)})]
+
+[GitHubActions(
+    "enforce-staging-to-master",
+    GitHubActionsImage.UbuntuLatest,
+    OnPullRequestBranches = new[] { "master" },
+    InvokedTargets = new[] { nameof(EnforceStagingToMaster) })]
 class Build : NukeBuild
 {
     /// Support plugins are available for:
@@ -93,26 +99,53 @@ class Build : NukeBuild
     [GitRepository] GitRepository Repository;
 
     Target EnforceDevelopmentToStaging => _ => _
+    .DependsOn(RunTests)
     .Executes(() =>
     {
+
+        Logger.Info("Enforcing that the 'development' branch can merge into 'staging'.");
+        var sourceBranch = getSourceBranch();
+        var targetBranch = getTargetBranch();
+
+        if (sourceBranch != "development")
+        {
+            throw new Exception($"Merging into the `{targetBranch}` branch is only allowed from the `development` branch.");
+        }
+
+        Logger.Info("The merge is permitted.");
+    });
+
+    Target EnforceStagingToMaster => _ => _
+    .DependsOn(RunTests)
+    .Executes(() =>
+    {
+        Logger.Info("Enforcing that the 'staging' branch can merge into 'master'.");
+        var sourceBranch = getSourceBranch();
+        var targetBranch = getTargetBranch();
+
+        if (sourceBranch != "staging")
+        {
+            throw new Exception($"Merging into the `{targetBranch}` branch is only allowed from the `development` branch.");
+        }
+        Logger.Info("The merge is permitted.");
+    });
+
+
+    private string getSourceBranch()
+    {
         var sourceBranch = Repository.Branch;
-        var newSourceBranch = Environment.GetEnvironmentVariable("GITHUB_REF");
-
-        var asumedSource = Environment.GetEnvironmentVariable("GITHUB_REF").Split("/").Last();
-        var asumedTarget = Environment.GetEnvironmentVariable("GITHUB_BASE_REF");
-
         if (sourceBranch.StartsWith("refs/pull/"))
         {
             // Use jq to parse the JSON payload provided by GitHub
             var prJson = File.ReadAllText(Environment.GetEnvironmentVariable("GITHUB_EVENT_PATH"));
             sourceBranch = JObject.Parse(prJson)["pull_request"]["head"]["ref"].ToString();
-            Logger.Info(sourceBranch);
         }
 
+        return sourceBranch;
+    }
 
-        if (sourceBranch != "test_development")
-        {
-            throw new Exception($"{asumedSource}: {asumedTarget}: Merging into the staging branch is only allowed from the development branch.");
-        }
-    });
+    private string getTargetBranch()
+    {
+        return Environment.GetEnvironmentVariable("GITHUB_BASE_REF");
+    }
 }
