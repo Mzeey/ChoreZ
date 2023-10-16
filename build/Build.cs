@@ -94,11 +94,11 @@ class Build : NukeBuild
     .Executes(() =>
     {
         var sourceBranch = Repository.Branch;
-        Logger.Info(sourceBranch);
+        
 
         if (sourceBranch != "test_development")
         {
-            throw new Exception("Merging into the staging branch is only allowed from the development branch.");
+            throw new Exception($"{sourceBranch}: Merging into the staging branch is only allowed from the development branch.");
         }
     });
 }
