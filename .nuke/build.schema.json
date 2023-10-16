@@ -74,6 +74,8 @@
             "enum": [
               "Clean",
               "Compile",
+              "EnforceDevelopmentToStaging",
+              "EnforceStagingToMaster",
               "Restore",
               "RunIntegrationTest",
               "RunTests",
@@ -89,6 +91,8 @@
             "enum": [
               "Clean",
               "Compile",
+              "EnforceDevelopmentToStaging",
+              "EnforceStagingToMaster",
               "Restore",
               "RunIntegrationTest",
               "RunTests",
