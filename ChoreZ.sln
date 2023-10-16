@@ -9,12 +9,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChoreZ.IntegrationTests", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChoreZ", "ChoreZ\ChoreZ.csproj", "{A071BDD9-6030-419B-A95A-026299F6AAC7}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{0BFB5FF8-6F7E-4C12-9F12-F3D7BA7EC21F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0BFB5FF8-6F7E-4C12-9F12-F3D7BA7EC21F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BFB5FF8-6F7E-4C12-9F12-F3D7BA7EC21F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77E161B6-CABA-49CF-A197-0F6FD3FFFF56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{77E161B6-CABA-49CF-A197-0F6FD3FFFF56}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77E161B6-CABA-49CF-A197-0F6FD3FFFF56}.Release|Any CPU.ActiveCfg = Release|Any CPU
