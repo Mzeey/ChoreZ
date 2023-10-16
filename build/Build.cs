@@ -1,6 +1,8 @@
 using System;
+using System.IO;
 using System.Linq;
 using Microsoft.VisualBasic;
+using Newtonsoft.Json.Linq;
 using Nuke.Common;
 using Nuke.Common.CI;
 using Nuke.Common.CI.GitHubActions;
@@ -98,6 +100,13 @@ class Build : NukeBuild
 
         var asumedSource = Environment.GetEnvironmentVariable("GITHUB_REF").Split("/").Last();
         var asumedTarget = Environment.GetEnvironmentVariable("GITHUB_BASE_REF");
+
+        if (sourceBranch.StartsWith("refs/pull/"))
+        {
+            // Use jq to parse the JSON payload provided by GitHub
+            var prJson = File.ReadAllText(Environment.GetEnvironmentVariable("GITHUB_EVENT_PATH"));
+            sourceBranch = JObject.Parse(prJson)["pull_request"]["head"]["ref"].ToString();
+        }
 
 
         if (sourceBranch != "test_development")
